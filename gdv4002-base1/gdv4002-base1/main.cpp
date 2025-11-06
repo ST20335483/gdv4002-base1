@@ -1,12 +1,22 @@
 #include "Engine.h"
+#include "Keys.h"
+#include <bitset>
+#include <complex>
 
 // Function prototypes
+using std::cout;
+using std::endl;
+
+std::bitset<5> keys{ 0x0 };
+
 void myUpdate(GLFWwindow* window, double tDelta);
+
+void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 int main(void) {
 
 	// Initialise the engine (create window, setup OpenGL backend)
-	int initResult = engineInit("GDV4002 - Applied Maths for Games", 1024, 1024, 25.0f);
+	int initResult = engineInit("GDV4002 - Applied Maths for Games", 1024, 1024, 10.0f);
 
 	// If the engine initialisation failed report error and exit
 	if (initResult != 0) {
@@ -15,38 +25,17 @@ int main(void) {
 		return initResult; // exit if setup failed
 	}
 
-	//
-	// Setup game scene objects here
-	//
-	// 
-	//addObject("player1", glm::vec2(1.0f, 1.0f), glm::radians(45.0f), glm::vec2(0.5f, 1.0f), "Resources\\Textures\\truth-nuke.png", TextureProperties::NearestFilterTexture());
-
-	addObject("Player1");
-	addObject("Player2");
-
-	GameObject2D* player1Object = getObject("Player1");
-
-	if (player1Object != nullptr)
-	{
-		GameObject2D* player2Object = getObject("Player2");
-
-		if (player2Object != nullptr) {
-
-			player2Object->position = glm::vec2(1.5f, 1.0f);
-			player2Object->orientation = glm::radians(45.0f);
-			player2Object->size = glm::vec2(0.75f, 0.75f);
-			player2Object->textureID = loadTexture("Resources\\Textures\\dog.png");
-		}
-
-		player1Object->position = glm::vec2(-1.0f, 1.0f);
-		player1Object->orientation = glm::radians(30.0f);
-		player1Object->size = glm::vec2(0.75f, 0.75f);
-		player1Object->textureID = loadTexture("Resources\\Textures\\bumblebee.png");
-
-		// update player1 here
-	}
+	addObject("player", glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), "Resources\\Textures\\player1_ship.png");
+	addObject("enemy", glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.75f, 0.75f), "Resources\\Textures\\dog.png");
+	addObject("enemy", glm::vec2(1.0f, 0.0f), 0.0f, glm::vec2(0.75f, 0.75f), "Resources\\Textures\\dog.png");
+	addObject("enemy", glm::vec2(2.0f, 0.0f), 0.0f, glm::vec2(0.75f, 0.75f), "Resources\\Textures\\dog.png");
 
 	setUpdateFunction(myUpdate);
+	setKeyboardHandler(myKeyboardHandler);
+
+	listGameObjectKeys();
+
+	listObjectCounts();
 
 	// Enter main loop - this handles update and render calls
 	engineMainLoop();
@@ -58,13 +47,87 @@ int main(void) {
 	return 0;
 }
 
+float enemyPhase[3] = { -1.0f, 1.0f, -1.0f };
+float enemyPhaseVelocity[3] = { glm::radians(90.0f), glm::radians(90.0f), glm::radians(90.0f) };
+
+
 void myUpdate(GLFWwindow* window, double tDelta)
 {
-	float player1RotationSpeed = glm::radians(90.0f);
-	float playerVelocity = 2.0f;
+	GameObjectCollection enemies = getObjectCollection("enemy");
+	for (int i = 0; i < enemies.objectCount; i++)
+	{
+		enemies.objectArray[i]->position.y = (sinf(enemyPhase[i] * 1.5));
+		enemyPhase[i] += enemyPhaseVelocity[i] * tDelta;
+	}
 
-	GameObject2D* player1 = getObject("Player1");
-	player1->position += playerVelocity * tDelta;
-	player1->orientation += player1RotationSpeed * tDelta;
+	GameObject2D* player = getObject("player");
+	static float playerSpeed = 5.0f;
 
+	std::complex<float> i = std::complex<float>(0.0f, 1.0f);
+
+	std::complex<float> dir = exp(i * player->orientation);
+
+	static float playerTurnSpeed = glm::radians(180.0f);
+	
+	if (keys.test(Key::W) == true)
+		player->position += glm::vec2(dir.real(), dir.imag()) * (float)tDelta;
+
+	if (keys.test(Key::S) == true)
+		player->position -= glm::vec2(dir.real(), dir.imag()) * (float)tDelta;
+
+	if (keys.test(Key::A) == true)
+		player->orientation += playerTurnSpeed * (float)tDelta;
+
+	if (keys.test(Key::D) == true)
+		player->orientation -= playerTurnSpeed * (float)tDelta;
+}
+
+void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (action == GLFW_PRESS)
+	{
+		switch (key)
+		{
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(window, true);
+			break;
+
+		case GLFW_KEY_W:
+			keys[Key::W] = true;
+			break;
+
+		case GLFW_KEY_S:
+			keys[Key::S] = true;
+			break;
+
+		case GLFW_KEY_A:
+			keys[Key::A] = true;
+			break;
+
+		case GLFW_KEY_D:
+			keys[Key::D] = true;
+			break;
+		}
+	}
+	else if (action == GLFW_RELEASE)
+	{
+		switch (key)
+		{
+		case GLFW_KEY_W:
+			keys[Key::W] = false;
+			break;
+
+		case GLFW_KEY_S:
+			keys[Key::S] = false;
+			break;
+
+		case GLFW_KEY_A:
+			keys[Key::A] = false;
+			break;
+
+		case GLFW_KEY_D:
+			keys[Key::D] = false;
+			break;
+		}
+	}
 }
