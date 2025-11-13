@@ -1,15 +1,11 @@
 #include "Engine.h"
 #include "Keys.h"
+#include "Player.h"
+#include "Enemy.h"
 #include <bitset>
-#include <complex>
-
-// Function prototypes
-using std::cout;
-using std::endl;
 
 std::bitset<5> keys{ 0x0 };
-
-void myUpdate(GLFWwindow* window, double tDelta);
+glm::vec2 gravity = glm::vec2(0.0f, 0.0f);
 
 void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
 
@@ -25,17 +21,27 @@ int main(void) {
 		return initResult; // exit if setup failed
 	}
 
-	addObject("player", glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), "Resources\\Textures\\player1_ship.png");
-	addObject("enemy", glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.75f, 0.75f), "Resources\\Textures\\dog.png");
-	addObject("enemy", glm::vec2(1.0f, 0.0f), 0.0f, glm::vec2(0.75f, 0.75f), "Resources\\Textures\\dog.png");
-	addObject("enemy", glm::vec2(2.0f, 0.0f), 0.0f, glm::vec2(0.75f, 0.75f), "Resources\\Textures\\dog.png");
+	GLuint playerTexture = loadTexture("Resources\\Textures\\player1_ship.png");
+	Player* mainPlayer = new Player(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), playerTexture, 1.0f, 2.0f);
+	addObject("player", mainPlayer);
 
-	setUpdateFunction(myUpdate);
+	// 1. Load enemy texture 
+	GLuint enemyTexture = loadTexture("Resources\\Textures\\truth-nuke.png");
+
+	// 2. Create enemy objects
+	Enemy* enemy1 = new Enemy(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture, 0.0f, glm::radians(45.0f));
+
+	Enemy* enemy2 = new Enemy(glm::vec2(1.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture, 0.0f, glm::radians(90.0f));
+
+	Enemy* enemy3 = new Enemy(glm::vec2(2.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture, 0.0f, glm::radians(60.0f));
+
+	// Add enemy objects to the engine
+	addObject("enemy1", enemy1);
+	addObject("enemy2", enemy2);
+	addObject("enemy3", enemy3);
+
+
 	setKeyboardHandler(myKeyboardHandler);
-
-	listGameObjectKeys();
-
-	listObjectCounts();
 
 	// Enter main loop - this handles update and render calls
 	engineMainLoop();
@@ -45,41 +51,6 @@ int main(void) {
 
 	// return success :)
 	return 0;
-}
-
-float enemyPhase[3] = { -1.0f, 1.0f, -1.0f };
-float enemyPhaseVelocity[3] = { glm::radians(90.0f), glm::radians(90.0f), glm::radians(90.0f) };
-
-
-void myUpdate(GLFWwindow* window, double tDelta)
-{
-	GameObjectCollection enemies = getObjectCollection("enemy");
-	for (int i = 0; i < enemies.objectCount; i++)
-	{
-		enemies.objectArray[i]->position.y = (sinf(enemyPhase[i] * 1.5));
-		enemyPhase[i] += enemyPhaseVelocity[i] * tDelta;
-	}
-
-	GameObject2D* player = getObject("player");
-	static float playerSpeed = 5.0f;
-
-	std::complex<float> i = std::complex<float>(0.0f, 1.0f);
-
-	std::complex<float> dir = exp(i * player->orientation);
-
-	static float playerTurnSpeed = glm::radians(180.0f);
-	
-	if (keys.test(Key::W) == true)
-		player->position += glm::vec2(dir.real(), dir.imag()) * (float)tDelta;
-
-	if (keys.test(Key::S) == true)
-		player->position -= glm::vec2(dir.real(), dir.imag()) * (float)tDelta;
-
-	if (keys.test(Key::A) == true)
-		player->orientation += playerTurnSpeed * (float)tDelta;
-
-	if (keys.test(Key::D) == true)
-		player->orientation -= playerTurnSpeed * (float)tDelta;
 }
 
 void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods)
