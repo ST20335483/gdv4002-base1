@@ -2,6 +2,7 @@
 #include "Keys.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Missile.h"
 #include <bitset>
 
 std::bitset<5> keys{ 0x0 };
@@ -35,11 +36,20 @@ int main(void) {
 
 	Enemy* enemy3 = new Enemy(glm::vec2(2.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture, 0.0f, glm::radians(60.0f));
 
+	GLuint missileTexture = loadTexture("Resoureces\\Textures\\missile.png");
+
+	Missile* missile = new Missile(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), playerTexture, 1.0f, 2.0f);
+
+
 	// Add enemy objects to the engine
 	addObject("enemy1", enemy1);
 	addObject("enemy2", enemy2);
 	addObject("enemy3", enemy3);
 
+	if (MissileCreation = true)
+	{
+		addObject("missile", missile);
+	}
 
 	setKeyboardHandler(myKeyboardHandler);
 
@@ -78,6 +88,10 @@ void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, in
 		case GLFW_KEY_D:
 			keys[Key::D] = true;
 			break;
+
+		case GLFW_KEY_SPACE:
+			keys[Key::SPACE] = true;
+			break;
 		}
 	}
 	else if (action == GLFW_RELEASE)
@@ -98,6 +112,10 @@ void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, in
 
 		case GLFW_KEY_D:
 			keys[Key::D] = false;
+			break;
+
+		case GLFW_KEY_SPACE:
+			keys[Key::SPACE] = false;
 			break;
 		}
 	}

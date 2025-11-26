@@ -1,6 +1,8 @@
 #include "Player.h"
 #include "Keys.h"
 #include "Engine.h"
+#include "main.cpp"
+#include "GameObject2D.h"
 #include <bitset>
 #include <complex>
 
@@ -16,24 +18,39 @@ Player::Player(glm::vec2 initPosition, float initOrientation, glm::vec2 initSize
 
 void Player::update(double tDelta)
 {
+	std::complex<float> i = std::complex<float>(0.0f, 1.0f);
+	std::complex<float> dir = exp(i * GameObject2D::orientation);
+	static float playerTurnSpeed = glm::radians(180.0f);
+
 	glm::vec2 F = glm::vec2(0.0f, 0.0f);
 
 	if (keys.test(Key::W) == true)
 	{
-		F += glm::vec2(0.0f, thrust);
+		//F += glm::vec2(0.0f, thrust);
+		F += glm::vec2(dir.real(), dir.imag()*thrust);
 	}
 	if (keys.test(Key::S) == true)
 	{
-		F += glm::vec2(0.0f, -thrust);
+		//F += glm::vec2(0.0f, -thrust);
+		F -= glm::vec2(dir.real(), dir.imag()*-thrust);
 	}
 	if (keys.test(Key::A) == true)
 	{
-		F += glm::vec2(-thrust, 0.0f);
+		//F += glm::vec2(-thrust, 0.0f);
+		GameObject2D::orientation += playerTurnSpeed * (float)tDelta;
 	}
 	if (keys.test(Key::D) == true)
 	{
-		F += glm::vec2(thrust, 0.0f);
+		//F += glm::vec2(thrust, 0.0f);
+		GameObject2D::orientation -= playerTurnSpeed * (float)tDelta;
 	}
+
+	bool MissileCreation = false;
+
+	if (keys.test(Key::SPACE) == true)
+		bool MissleCreation = true;
+	else
+		bool MissileCreation = false;
 
 	F += gravity;
 

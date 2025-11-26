@@ -48,6 +48,9 @@
     <ClCompile Include="Enemy.cpp">
       <Filter>Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Missile.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h">
@@ -78,6 +81,9 @@
       <Filter>Classes</Filter>
     </ClInclude>
     <ClInclude Include="Enemy.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Missile.h">
       <Filter>Classes</Filter>
     </ClInclude>
   </ItemGroup>
