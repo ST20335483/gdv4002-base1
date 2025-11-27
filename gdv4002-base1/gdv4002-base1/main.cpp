@@ -4,9 +4,12 @@
 #include "Enemy.h"
 #include "Missile.h"
 #include <bitset>
+#include <random>
 
 std::bitset<5> keys{ 0x0 };
 glm::vec2 gravity = glm::vec2(0.0f, 0.0f);
+
+using namespace std;
 
 void myKeyboardHandler(GLFWwindow* window, int key, int scancode, int action, int mods);
 
@@ -23,33 +26,49 @@ int main(void) {
 	}
 
 	GLuint playerTexture = loadTexture("Resources\\Textures\\player1_ship.png");
-	Player* mainPlayer = new Player(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), playerTexture, 1.0f, 2.0f);
+	Player* mainPlayer = new Player(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), playerTexture, 2.0f, 2.0f);
 	addObject("player", mainPlayer);
 
 	// 1. Load enemy texture 
-	GLuint enemyTexture = loadTexture("Resources\\Textures\\truth-nuke.png");
+	GLuint enemyTexture = loadTexture("Resources\\Textures\\asteroid.png");
 
 	// 2. Create enemy objects
-	Enemy* enemy1 = new Enemy(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture, 0.0f, glm::radians(45.0f));
+	float minX = -getViewplaneWidth();
+	float maxX = getViewplaneWidth();
+	float minY = -getViewplaneHeight();
+	float maxY = getViewplaneHeight();
 
-	Enemy* enemy2 = new Enemy(glm::vec2(1.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture, 0.0f, glm::radians(90.0f));
+	random_device rd;
+	mt19937 gen(rd());
+	uniform_int_distribution<> distribX(minX, maxX);
+	uniform_int_distribution<> distribY(minY, maxY);
 
-	Enemy* enemy3 = new Enemy(glm::vec2(2.0f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), enemyTexture, 0.0f, glm::radians(60.0f));
+	float randomValueX = distribX(gen);
+	float randomValueY = distribY(gen);
 
-	GLuint missileTexture = loadTexture("Resoureces\\Textures\\missile.png");
+	Enemy* enemy1 = new Enemy(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1.0f, 1.0f), enemyTexture, 0.0f, glm::radians(45.0f), rand() % 361);
 
-	Missile* missile = new Missile(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), playerTexture, 1.0f, 2.0f);
+	Enemy* enemy2 = new Enemy(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1.0f, 1.0f), enemyTexture, 0.0f, glm::radians(90.0f), rand() % 361);
+
+	Enemy* enemy3 = new Enemy(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1.0f, 1.0f), enemyTexture, 0.0f, glm::radians(60.0f), rand() % 361);
+
+	Enemy* enemy4 = new Enemy(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1.0f, 1.0f), enemyTexture, 0.0f, glm::radians(30.0f), rand() % 361);
+
+	//GLuint missileTexture = loadTexture("Resoureces\\Textures\\missile.png");
+
+	//Missile* missile = new Missile(glm::vec2(-1.5f, 0.0f), 0.0f, glm::vec2(0.5f, 0.5f), playerTexture, 1.0f, 2.0f);
 
 
 	// Add enemy objects to the engine
 	addObject("enemy1", enemy1);
 	addObject("enemy2", enemy2);
 	addObject("enemy3", enemy3);
+	addObject("enemy4", enemy4);
 
-	if (MissileCreation = true)
-	{
-		addObject("missile", missile);
-	}
+	//if (missilecreation = true)
+	//{
+		//addobject("missile", missile);
+	//}
 
 	setKeyboardHandler(myKeyboardHandler);
 
