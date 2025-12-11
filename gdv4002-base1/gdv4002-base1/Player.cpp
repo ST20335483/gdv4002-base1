@@ -7,7 +7,6 @@
 
 using std::complex;
 extern std::bitset<5> keys;
-extern glm::vec2 gravity;
 
 Player::Player(glm::vec2 initPosition, float initOrientation, glm::vec2 initSize, GLuint initTextureID, float mass, float thrust) : GameObject2D(initPosition, initOrientation, initSize, initTextureID)
 {
@@ -44,8 +43,6 @@ void Player::update(double tDelta)
 		//F += glm::vec2(thrust, 0.0f);
 		GameObject2D::orientation -= playerTurnSpeed * (float)tDelta;
 	}
-
-	F += gravity;
 
 	if (position.y < -getViewplaneHeight() / 2.0f)
 	{

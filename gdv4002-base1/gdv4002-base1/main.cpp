@@ -8,7 +8,6 @@
 #include <random>
 
 std::bitset<5> keys{ 0x0 };
-glm::vec2 gravity = glm::vec2(0.0f, -0.0005f);
 
 using namespace std;
 
@@ -46,10 +45,10 @@ int main(void) {
 	//Enemy* enemy3 = new Enemy(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1.0f, 1.0f), enemyTexture, 0.0f, glm::radians(60.0f), rand() % 361);
 	//Enemy* enemy4 = new Enemy(glm::vec2(0.0f, 0.0f), 0.0f, glm::vec2(1.0f, 1.0f), enemyTexture, 0.0f, glm::radians(30.0f), rand() % 361);
 
-	Emitter* emitter1 = new Emitter(glm::vec2(0.0f, (getViewplaneHeight() / 2.0f * 1.2f)), glm::vec2(getViewplaneWidth() / 2.0f, 0.0f), 0.05f);
-	Emitter* emitter2 = new Emitter(glm::vec2(0.0f, -(getViewplaneHeight() / 2.0f * 1.2f)), glm::vec2(getViewplaneWidth() / 2.0f, 0.0f), 0.05f);
-	Emitter* emitter3 = new Emitter(glm::vec2((getViewplaneWidth() / 2.0f * 1.2f), 0.0f), glm::vec2(getViewplaneHeight() / 2.0f, 0.0f), 0.05f);
-	Emitter* emitter4 = new Emitter(glm::vec2(-(getViewplaneWidth() / 2.0f * 1.2f), 0.0f), glm::vec2(getViewplaneHeight() / 2.0f, 0.0f), 0.05f);
+	Emitter* emitter1 = new Emitter(glm::vec2(0.0f, 0.0f), glm::vec2(0.0f, 0.0f), 0.05f);
+	//Emitter* emitter2 = new Emitter(glm::vec2(0.0f, -(getViewplaneHeight() / 2.0f * 1.2f)), glm::vec2(getViewplaneWidth() / 2.0f, 0.0f), 0.05f);
+	//Emitter* emitter3 = new Emitter(glm::vec2((getViewplaneWidth() / 2.0f * 1.2f), 0.0f), glm::vec2(getViewplaneHeight() / 2.0f, 0.0f), 0.05f);
+	//Emitter* emitter4 = new Emitter(glm::vec2(-(getViewplaneWidth() / 2.0f * 1.2f), 0.0f), glm::vec2(getViewplaneHeight() / 2.0f, 0.0f), 0.05f);
 
 	// Add enemy objects to the engine
 	//addObject("enemy1", enemy1);
@@ -58,9 +57,9 @@ int main(void) {
 	//addObject("enemy4", enemy4);
 
 	addObject("emitter", emitter1);
-	addObject("emitter", emitter2);
-	addObject("emitter", emitter3);
-	addObject("emitter", emitter4);
+	//addObject("emitter", emitter2);
+	//addObject("emitter", emitter3);
+	//addObject("emitter", emitter4);
 
 	setKeyboardHandler(myKeyboardHandler);
 

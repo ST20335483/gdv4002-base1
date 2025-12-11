@@ -18,7 +18,6 @@ private:
 	std::uniform_int_distribution<int> spriteDist;
 	std::uniform_real_distribution<float> normDist;
 	std::uniform_real_distribution<float> massDist, scaleDist;
-	std::uniform_real_distribution<float> rotateDist;
 
 public:
 	Emitter(glm::vec2 initPosition, glm::vec2 initSize, float emitTimeInterval);
